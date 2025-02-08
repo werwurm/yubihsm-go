@@ -9,7 +9,7 @@ import (
 	"errors"
 	"sync"
 
-	"github.com/enceve/crypto/cmac"
+	"github.com/aead/cmac"
 	"github.com/certusone/yubihsm-go/authkey"
 	"github.com/certusone/yubihsm-go/commands"
 	"github.com/certusone/yubihsm-go/connector"
