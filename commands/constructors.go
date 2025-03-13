@@ -506,7 +506,7 @@ func CreateDecryptOaepCommand(objID uint16, ciphertext, labelHash []byte, algori
 	}
 
 	ciphertextLen := len(ciphertext)
-	if ciphertextLen != 256 || ciphertextLen != 384 || ciphertextLen != 512 {
+	if ciphertextLen != 256 && ciphertextLen != 384 && ciphertextLen != 512 {
 		return nil, fmt.Errorf("unsupported ciphertext length: %v", len(ciphertext))
 	}
 
