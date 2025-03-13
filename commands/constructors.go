@@ -4,11 +4,11 @@ import (
 	"bytes"
 	"encoding/binary"
 	"errors"
+	"fmt"
 	"io"
 
 	"github.com/certusone/yubihsm-go/authkey"
 )
-
 
 func CreateDeviceInfoCommand() (*CommandMessage, error) {
 	command := &CommandMessage{
@@ -477,6 +477,44 @@ func CreateImportWrappedCommand(wrapObjID uint16, nonce, data []byte) (*CommandM
 	binary.Write(payload, binary.BigEndian, wrapObjID)
 	payload.Write(nonce)
 	payload.Write(data)
+	command.Data = payload.Bytes()
+
+	return command, nil
+}
+
+func CreateDecryptOaepCommand(objID uint16, ciphertext, labelHash []byte, algorithm Algorithm) (*CommandMessage, error) {
+	command := &CommandMessage{
+		CommandType: CommandTypeDecryptOaep,
+	}
+
+	labelHashLen := len(labelHash)
+	switch algorithm {
+	case AlgorithmRSAOAEPSHA256:
+		if labelHashLen != 32 {
+			return nil, fmt.Errorf("unsupported OAEP label hash length for sha256: %v", labelHashLen)
+		}
+	case AlgorithmRSAOAEPSHA384:
+		if labelHashLen != 48 {
+			return nil, fmt.Errorf("unsupported OAEP label hash length for sha384: %v", labelHashLen)
+		}
+	case AlgorithmRSAOAEPSHA512:
+		if labelHashLen != 64 {
+			return nil, fmt.Errorf("unsupported OAEP label hash length for sha512: %v", labelHashLen)
+		}
+	default:
+		return nil, fmt.Errorf("unsupported algorithm: %v", algorithm)
+	}
+
+	ciphertextLen := len(ciphertext)
+	if ciphertextLen != 256 || ciphertextLen != 384 || ciphertextLen != 512 {
+		return nil, fmt.Errorf("unsupported ciphertext length: %v", len(ciphertext))
+	}
+
+	payload := bytes.NewBuffer([]byte{})
+	binary.Write(payload, binary.BigEndian, objID)
+	binary.Write(payload, binary.BigEndian, algorithm)
+	payload.Write(ciphertext)
+	payload.Write(labelHash)
 	command.Data = payload.Bytes()
 
 	return command, nil
