@@ -10,6 +10,7 @@ import (
 	"github.com/certusone/yubihsm-go/authkey"
 )
 
+
 func CreateDeviceInfoCommand() (*CommandMessage, error) {
 	command := &CommandMessage{
 		CommandType: CommandTypeDeviceInfo,
