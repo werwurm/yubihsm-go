@@ -490,15 +490,15 @@ func CreateDecryptOaepCommand(objID uint16, ciphertext, labelHash []byte, algori
 
 	labelHashLen := len(labelHash)
 	switch algorithm {
-	case AlgorithmRSAOAEPSHA256:
+	case AlgorithmRSAMGF1SHA256:
 		if labelHashLen != 32 {
 			return nil, fmt.Errorf("unsupported OAEP label hash length for sha256: %v", labelHashLen)
 		}
-	case AlgorithmRSAOAEPSHA384:
+	case AlgorithmRSAMGF1SHA384:
 		if labelHashLen != 48 {
 			return nil, fmt.Errorf("unsupported OAEP label hash length for sha384: %v", labelHashLen)
 		}
-	case AlgorithmRSAOAEPSHA512:
+	case AlgorithmRSAMGF1SHA512:
 		if labelHashLen != 64 {
 			return nil, fmt.Errorf("unsupported OAEP label hash length for sha512: %v", labelHashLen)
 		}
