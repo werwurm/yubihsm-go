@@ -15,6 +15,7 @@ Currently the following commands are implemented:
  * PutAsymmetricKey
  * GetPubKey
  * DeriveEcdh
+ * DecryptOaep
  * Echo
  * ChangeAuthenticationKey
  * PutAuthenticationKey

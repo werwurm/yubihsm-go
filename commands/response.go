@@ -131,6 +131,10 @@ type (
 		ObjectType uint8
 		ObjectID   uint16
 	}
+
+	DecryptOaepResponse struct {
+		Plaintext []byte
+	}
 )
 
 // ParseResponse parses the binary response from the card to the relevant Response type.
@@ -207,6 +211,8 @@ func ParseResponse(data []byte) (Response, error) {
 		return parseExportWrappedResponse(payload)
 	case CommandTypeImportWrapped:
 		return parseImportWrappedResponse(payload)
+	case CommandTypeDecryptOaep:
+		return parseDecryptOaepResponse(payload)
 	case ErrorResponseCode:
 		return nil, parseErrorResponse(payload)
 	default:
@@ -487,6 +493,16 @@ func parseImportWrappedResponse(payload []byte) (Response, error) {
 	return &ImportWrappedResponse{
 		ObjectType: uint8(payload[0]),
 		ObjectID:   objID,
+	}, nil
+}
+
+func parseDecryptOaepResponse(payload []byte) (Response, error) {
+	if len(payload) < 1 {
+		return nil, errors.New("invalid response payload length")
+	}
+
+	return &DecryptOaepResponse{
+		Plaintext: payload,
 	}, nil
 }
 
